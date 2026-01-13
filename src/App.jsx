@@ -18,7 +18,6 @@ import FlashCardDetails from './pages/FlashCardDetails.jsx'
 
 const App = () => {
   const { authUser, loading ,token} = useContext(Authcontext)
-  console.log(authUser)
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">

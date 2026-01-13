@@ -7,7 +7,6 @@ import { PdfContext } from '../context/Pdfcontext';
 const Profile = () => {
   const { authUser, logoutUser ,UpdateProfile,loading} = useContext(Authcontext);
   const {pdfdata,allcard}=useContext(PdfContext)
-  console.log("user",authUser)
   const navigate = useNavigate();
   const [editMode, setEditMode] = useState(false);
   const [userData, setUserData] = useState({
@@ -18,9 +17,6 @@ const Profile = () => {
     flashcardsCount: 0,
     quizzesCount: 0
   });
-  // const [loading, setLoading] = useState(false);
-
-  // Simulate user data fetch
   useEffect(() => {
     if (authUser) {
       setUserData({
@@ -33,10 +29,7 @@ const Profile = () => {
       });
     }
   }, [authUser]);
-console.log("userdata",userData)
   const handleSave = async () => {
-    // setLoading(true);
-    
   const formdata=new FormData();
 
   formdata.append("name",userData.name);

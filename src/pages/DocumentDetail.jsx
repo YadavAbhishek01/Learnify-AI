@@ -42,71 +42,78 @@ export default function DocumentDetail() {
 
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-4 md:px-10 md:py-8">
-      
-      {/* Back */}
-      <button
-        onClick={() => navigate("/documents")}
-        className="mb-4 flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700"
-      >
-        ← Back to Documents
-      </button>
+  
+  {/* Back Button */}
+  <button
+    onClick={() => navigate("/documents")}
+    className="mb-4 flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700"
+  >
+    ← Back to Documents
+  </button>
 
-      {/* Title */}
-      <h1 className="mb-6 text-2xl font-semibold text-gray-900">
-        {currentPdf.originalName}
-      </h1>
+  {/* Title */}
+  <h1 className="mb-6 text-2xl font-semibold text-gray-900">
+    {currentPdf.originalName}
+  </h1>
 
-      {/* Tabs */}
-      <div className="border-b border-gray-200">
-        <nav className="-mb-px flex gap-8 text-sm font-medium">
-          {TABS.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`pb-3 ${
-                activeTab === tab
-                  ? "text-emerald-600 border-b-2 border-emerald-500"
-                  : "text-gray-500 border-b-2 border-transparent"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </nav>
-      </div>
+  {/* Tabs */}
+  <div className="border-b border-gray-200">
+    <nav className="-mb-px flex gap-8 text-sm font-medium">
+      {TABS.map((tab) => (
+        <button
+          key={tab}
+          onClick={() => setActiveTab(tab)}
+          className={`pb-3 ${
+            activeTab === tab
+              ? "text-emerald-600 border-b-2 border-emerald-500"
+              : "text-gray-500 border-b-2 border-transparent"
+          }`}
+        >
+          {tab}
+        </button>
+      ))}
+    </nav>
+  </div>
 
-      {/* Content */}
-      <div className="mt-6 rounded-2xl bg-white p-4 shadow-sm">
-        {activeTab === "Content" && (
-          <>
-            <div className="flex justify-between border-b pb-3">
-              <h2 className="text-sm font-semibold">Document Viewer</h2>
-              <a
-                href={currentPdf.fileUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="text-xs text-blue-600"
-              >
-                Open in new tab ↗
-              </a>
-            </div>
+  {/* Content */}
+  <div className="mt-6 rounded-2xl bg-white p-4 shadow-sm">
+    {activeTab === "Content" && (
+      <>
+        <div className="flex justify-between border-b pb-3">
+          <h2 className="text-sm font-semibold">Document Viewer</h2>
+          <a
+            href={currentPdf.fileUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="text-xs text-blue-600"
+          >
+            Open in new tab ↗
+          </a>
+        </div>
 
-            <div className="h-[80vh] mt-4 rounded-xl overflow-hidden bg-gray-900">
-              <iframe
-                src={currentPdf.fileUrl}
-                className="w-full h-full"
-                title="PDF Viewer"
-              />
-            </div>
-          </>
-        )}
+        <div className="h-[80vh] mt-4 rounded-xl overflow-hidden bg-gray-900">
+          <iframe
+            src={currentPdf.fileUrl}
+            className="w-full h-full"
+            title="PDF Viewer"
+          />
+        </div>
+      </>
+    )}
 
-        {activeTab === "Chat" && <DocumentChat pdfId={pdfid} />}
+    {/* Chat */}
+    {activeTab === "Chat" && <DocumentChat pdfId={pdfid} />}
 
-        {activeTab === "AI Actions" && <div><AIAssistantPanel/></div>}
-        {activeTab === "Flashcards" && <div><FlashCard/></div>}
-        {activeTab === "Quizzes" && <div><Quiz/></div>}
-      </div>
-    </div>
+    {/* AI Actions */}
+    {activeTab === "AI Actions" && <AIAssistantPanel />}
+
+    {/* Flashcards */}
+    {activeTab === "Flashcards" && <FlashCard />}
+
+    {/* Quizzes */}
+    {activeTab === "Quizzes" && <Quiz />}
+    
+  </div>
+</div>
   );
 }

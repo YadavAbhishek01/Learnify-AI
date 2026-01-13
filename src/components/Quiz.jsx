@@ -7,7 +7,7 @@ const QUESTION_TIME = 15;
 
 const Quiz = () => {
   const { pdfid } = useParams();
-  const { Quiz, SetProgress, SubmitQuiz, GenerateQuiz,loading } = useContext(PdfContext);
+  const { Quiz, SetProgress, SubmitQuiz, GenerateQuiz, loading } = useContext(PdfContext);
 
   const [showQuiz, setShowQuiz] = useState(false);
   const [current, setCurrent] = useState(0);
@@ -19,7 +19,7 @@ const Quiz = () => {
 
   // Initialize answers array when Quiz loads
   useEffect(() => {
-    if (Quiz && Quiz.length) {
+    if (Quiz && Array.isArray(Quiz) && Quiz.length) {
       setAnswers(Array(Quiz.length).fill(null));
     }
   }, [Quiz]);
@@ -45,7 +45,7 @@ const Quiz = () => {
     updated[current] = selected;
     setAnswers(updated);
 
-    if (selected === Quiz[current].correctAnswer) setScore((prev) => prev + 1);
+    if (Quiz?.[current]?.correctAnswer === selected) setScore((prev) => prev + 1);
     setSelected("");
     setTimeLeft(QUESTION_TIME);
     setCurrent((prev) => prev + 1);
@@ -62,13 +62,17 @@ const Quiz = () => {
     updated[current] = selected;
     setAnswers(updated);
 
-    const newScore = score + (selected === Quiz[current].correctAnswer ? 1 : 0);
+    const newScore = score + (Quiz?.[current]?.correctAnswer === selected ? 1 : 0);
     setScore(newScore);
     setSubmitted(true);
 
-    // Update progress in context & submit via API
-    SetProgress(newScore);
-    await SubmitQuiz(pdfid, newScore);
+    try {
+      SetProgress(newScore);
+      await SubmitQuiz(pdfid,newScore);
+    } catch (err) {
+      console.error(err);
+      toast.error(err?.message || "Failed to submit quiz");
+    }
   };
 
   // Show generate quiz screen
@@ -81,16 +85,28 @@ const Quiz = () => {
         </p>
         <button
           onClick={async () => {
-            await GenerateQuiz(pdfid);
-            setShowQuiz(true);
+            try {
+              await GenerateQuiz(pdfid);
+              setShowQuiz(true);
+            } catch (err) {
+              console.error(err);
+              toast.error(err?.message || "Failed to generate quiz");
+            }
           }}
-        className={`px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-  disabled={loading}
+          className={`px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+          disabled={loading}
         >
-        {loading ? "Generating..." : "Generate Quiz"}
+          {loading ? "Generating..." : "Generate Quiz"}
         </button>
       </div>
     );
+  }
+
+  // Handle empty quiz case
+  if (!Quiz || !Array.isArray(Quiz) || Quiz.length === 0) {
+    return <div className="text-center p-6">No quiz available for this PDF.</div>;
   }
 
   // Show quiz results
@@ -99,21 +115,28 @@ const Quiz = () => {
       <div className="max-w-3xl mx-auto p-6">
         <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-100 shadow-lg text-center">
           <h2 className="text-3xl font-bold text-emerald-700 mb-2">Quiz Completed 🎉</h2>
-          <p className="text-lg mb-4">Your Score: {score} / {Quiz.length}</p>
+          <p className="text-lg mb-4">
+            Your Score: {score} / {Quiz.length}
+          </p>
         </div>
 
         <div className="mt-8 space-y-6">
           {Quiz.map((q, i) => (
             <div key={i} className="bg-white border rounded-xl p-4 shadow-md">
-              <p className="font-medium mb-3">{q.question}</p>
+              <p className="font-medium mb-3">{q?.question || "Question not available"}</p>
               <div className="space-y-2">
-                {q.options.map((opt, idx) => {
+                {q?.options?.map((opt, idx) => {
+                  if (!opt) return null;
                   const isCorrect = opt === q.correctAnswer;
                   const isUser = answers[i] === opt;
                   let cls = "px-3 py-2 rounded border";
                   if (isCorrect) cls += " bg-green-100 border-green-500";
                   if (isUser && !isCorrect) cls += " bg-red-100 border-red-500";
-                  return <div key={idx} className={cls}>{opt}</div>;
+                  return (
+                    <div key={idx} className={cls}>
+                      {opt}
+                    </div>
+                  );
                 })}
               </div>
             </div>
@@ -127,11 +150,13 @@ const Quiz = () => {
   const progress = ((current + 1) / Quiz.length) * 100;
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
+    <div className="max-w-2xl mx-auto p-4 sm:p-6">
       {/* Progress + Timer */}
       <div className="mb-4">
-        <div className="flex justify-between text-sm text-slate-500 mb-1">
-          <span>Question {current + 1} / {Quiz.length}</span>
+        <div className="flex flex-col sm:flex-row sm:justify-between gap-1 text-sm text-slate-500 mb-1">
+          <span>
+            Question {current + 1} / {Quiz.length}
+          </span>
           <span className="font-semibold">⏱ {timeLeft}s</span>
         </div>
         <div className="w-full h-2 bg-slate-200 rounded">
@@ -143,17 +168,22 @@ const Quiz = () => {
       </div>
 
       {/* Question Card */}
-      <div className="bg-white rounded-2xl border border-emerald-100 shadow-md p-6">
-        <h3 className="text-lg font-semibold mb-6 text-slate-800">
-          {Quiz[current].question}
+      <div className="bg-white rounded-2xl border border-emerald-100 shadow-md p-4 sm:p-6">
+        <h3 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-slate-800">
+          {Quiz[current]?.question || "Question not available"}
         </h3>
 
         <div className="space-y-3">
-          {Quiz[current].options.map((opt, idx) => (
+          {Quiz[current]?.options?.map((opt, idx) => (
             <button
               key={idx}
               onClick={() => setSelected(opt)}
-              className={`w-full text-left px-4 py-3 rounded-xl border transition ${selected === opt ? "border-emerald-600 bg-emerald-50" : "border-slate-200 hover:bg-slate-50"}`}
+              className={`w-full text-left px-4 py-3 rounded-xl border transition text-sm sm:text-base
+            ${
+              selected === opt
+                ? "border-emerald-600 bg-emerald-50"
+                : "border-slate-200 hover:bg-slate-50"
+            }`}
             >
               {opt}
             </button>
@@ -161,18 +191,18 @@ const Quiz = () => {
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end mt-6">
+        <div className="flex justify-center sm:justify-end mt-6">
           {current === Quiz.length - 1 ? (
             <button
               onClick={handleSubmit}
-              className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition"
+              className="w-full sm:w-auto px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition"
             >
               Submit Quiz
             </button>
           ) : (
             <button
               onClick={handleNext}
-              className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition"
+              className="w-full sm:w-auto px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition"
             >
               Next
             </button>

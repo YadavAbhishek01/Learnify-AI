@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }) => {
       axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     }
   }, [token]);
-  console.log(authUser)
   const getRegister = async (name, email, password) => {
     try {
       SetLoading(true)

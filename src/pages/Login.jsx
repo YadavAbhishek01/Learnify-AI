@@ -8,7 +8,6 @@ const Login = () => {
   const [email,SetEmail]=useState('')
   const [hide,SetHide]=useState(false)
   const [password,SetPassword]=useState('')
-  console.log("pass",hide)
   const navigate=useNavigate();
   const handelLogin=()=>{
     getLogin(email,password);

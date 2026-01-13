@@ -31,7 +31,7 @@ useEffect(() => {
   ProgreesInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
 
   getPdfById(); 
-}, [token]);
+}, [authUser]);
 
 
 
@@ -56,16 +56,20 @@ useEffect(() => {
   };
 
   // ✅ MEMOIZED FUNCTION
-  const getPdfById = useCallback(async () => {
+  const getPdfById = async () => {
     try {
+      SetLoading(true)
       const res = await PdfUpload.get("/my-pdfs");
       if (res.data.success) {
         setPdfData(res.data.pdfs);
       }
     } catch (error) {
+      SetLoading(false)
       console.error(error);
+    }finally{
+      SetLoading(false)
     }
-  }, [token]);
+  }
 
   const getAiResponse=async({pdfId,question})=>{
     try {
@@ -91,14 +95,15 @@ useEffect(() => {
   const DeletePdf=async(pdfId)=>{
     try {
       SetLoading(true)
-      getPdfById()
         const res=await PdfUpload.delete(`/delete/${pdfId}`);
       if(res.data.success)
       {
         toast.success("Deleted Successfully")
+        SetLoading(false)
       }
       else{
         toast.error("failed to delete the document")
+        SetLoading(false)
       }
     } catch (error) {
       SetLoading(false)
@@ -219,7 +224,7 @@ const GenerateQuiz=async(pdfId)=>{
 const SubmitQuiz=async(pdfId,score)=>{
   try {
     SetLoading(true);
-    const res=await ProgreesInstance.post(`/quiz/${pdfId}`,score);
+    const res=await ProgreesInstance.post(`/quiz/${pdfId}`,{score});
 
     if(res.data.success)
     {

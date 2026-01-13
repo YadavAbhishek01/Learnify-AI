@@ -53,16 +53,16 @@ export default function DocumentChat({ pdfId }) {
   };
 
   return (
-    <div className="flex h-[60vh] flex-col rounded-2xl bg-white shadow-sm">
+    <div className="flex h-screen flex-col rounded-2xl bg-white shadow-sm">
       {/* Messages container */}
-      <div className="flex flex-col space-y-3 p-4 overflow-y-auto max-h-[60vh]">
+      <div className="flex flex-col space-y-3 p-2 md:p-4 overflow-y-auto flex-1">
         {messages.map((msg, index) => (
           <div
             key={index}
             className={`flex ${msg.role === "ai" ? "justify-start" : "justify-end"}`}
           >
             <div
-              className={`relative max-w-[75%] rounded-2xl px-4 py-3 text-sm wrap-break-word
+              className={`relative max-w-[90%] md:max-w-[75%] rounded-2xl px-3 md:px-4 py-3 text-sm wrap-break-word
                 ${msg.role === "ai"
                   ? "bg-emerald-50 text-emerald-900 shadow-md"
                   : "bg-emerald-600 text-white shadow-md"
@@ -125,8 +125,8 @@ export default function DocumentChat({ pdfId }) {
         {/* AI typing indicator */}
         {loading && (
           <div className="flex justify-start">
-            <div className="max-w-[30%] rounded-2xl bg-emerald-100 px-4 py-2 text-sm text-emerald-700 shadow-md flex items-center gap-2 animate-pulse">
-              <Dna className="w-5 h-5 animate-spin-slow" />
+            <div className="max-w-[50%] md:max-w-[30%] rounded-2xl bg-emerald-100 px-3 md:px-4 py-2 text-sm text-emerald-700 shadow-md flex items-center gap-2 animate-pulse">
+              <Dna className="w-4 h-4 md:w-5 md:h-5 animate-spin-slow" />
               <span>typing...</span>
             </div>
           </div>
@@ -136,16 +136,16 @@ export default function DocumentChat({ pdfId }) {
       </div>
 
       {/* Input */}
-      <form onSubmit={handleSubmit} className="border-t px-4 py-3 flex gap-3">
+      <form onSubmit={handleSubmit} className="border-t px-2 md:px-4 py-2 md:py-3 flex gap-2 md:gap-3">
         <input
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          className="flex-1 rounded-2xl border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-300"
+          className="flex-1 rounded-2xl border px-3 md:px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-300"
           placeholder="Ask about this document..."
         />
         <button
           disabled={inputValue==="" || loading}
-          className="bg-emerald-500 text-white px-4 rounded-xl disabled:opacity-50 cursor-no-drop"
+          className="bg-emerald-500 text-white px-2 md:px-4 py-2 rounded-xl disabled:opacity-50 cursor-no-drop"
         >
           ➤
         </button>

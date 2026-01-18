@@ -39,6 +39,14 @@ export default function DocumentDetail() {
       </div>
     );
   }
+// If no PDF uploaded at all
+if (pdfdata && pdfdata.length === 0) {
+  return (
+    <div className="min-h-screen flex items-center justify-center text-gray-500">
+      No PDF uploaded. Please upload a PDF first.
+    </div>
+  );
+}
 
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-4 md:px-10 md:py-8">

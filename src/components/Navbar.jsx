@@ -21,7 +21,7 @@ const Navbar = ({ setOpen }) => {
 
           {/* Center: Site Name */}
           <h1 className="absolute left-1/2 -translate-x-1/2 text-lg font-semibold text-gray-800">
-            MySite
+            Learnify-Ai
           </h1>
 
           {/* Right: Bell + Profile */}

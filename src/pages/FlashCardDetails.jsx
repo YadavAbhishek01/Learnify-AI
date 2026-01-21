@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PdfContext } from "../context/Pdfcontext";
-import { useParams } from "react-router-dom";
-
+import { Link, useParams } from "react-router-dom";
+import { Trash } from "lucide-react";
 const FlashCardDetails = () => {
   const { allcard, GetFlashcardsByPdfId, loading } = useContext(PdfContext);
   const { id } = useParams();
@@ -20,13 +20,54 @@ const FlashCardDetails = () => {
 
   const currentCard = allcard.find((card) => card._id === id);
 
-  if (loading) {
-    return <div className="text-center py-20">Loading flashcards...</div>;
-  }
+if (loading) {
+  return (
+    <div className="flex items-center justify-center min-h-[60vh] px-4">
+      <div className="bg-white  rounded-3xl p-8 max-w-md text-center">
+        
+        <div className="h-12 w-12 mx-auto mb-4 animate-spin rounded-full border-4 border-emerald-100 border-t-emerald-600"></div>
 
-  if (!currentCard) {
-    return <div className="text-center py-20">No flashcards available</div>;
-  }
+        <h2 className="text-lg font-semibold mb-1">
+          Loading Flashcards
+        </h2>
+
+        <p className="text-slate-600 text-sm">
+          Preparing smart flashcards from your document...
+        </p>
+      </div>
+    </div>
+  );
+}
+
+
+ if (!currentCard) {
+  return (
+    <div className="flex items-center justify-center min-h-[60vh] px-4">
+      <div className="bg-white border rounded-3xl shadow-sm p-8 max-w-md text-center">
+        
+        <div className="w-16 h-16 mx-auto mb-4 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl">
+          🗂
+        </div>
+
+        <h2 className="text-xl font-semibold mb-2">
+          No Flashcards Available
+        </h2>
+
+        <p className="text-slate-600 text-sm mb-6">
+          You haven’t generated any flashcards yet. Upload a PDF and let AI
+          create flashcards for you automatically.
+        </p>
+
+        <Link
+          to="/documents"
+          className="inline-block px-6 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition"
+        >
+          Generate Flashcards
+        </Link>
+      </div>
+    </div>
+  );
+}
 
   const { question, answer } = currentCard.content[current];
 

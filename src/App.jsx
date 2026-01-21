@@ -13,6 +13,7 @@ import { Authcontext } from './context/Authcontext'
 import Profile from './pages/Profile.jsx'
 import FlashCard from './pages/FlashCard.jsx'
 import FlashCardDetails from './pages/FlashCardDetails.jsx'
+import LandingPage from './pages/LandingPage.jsx'
 
 
 
@@ -37,7 +38,8 @@ const App = () => {
     token ? (
       <Navigate to="/dashboard" replace />
     ) : (
-      <Navigate to="/login" replace />
+      // <Navigate to="/login" replace />
+      <LandingPage/>
     )
   }
 />

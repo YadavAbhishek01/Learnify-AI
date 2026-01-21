@@ -28,6 +28,11 @@ export default function Documents() {
   return (
     <div className="min-h-screen bg-gray-50 px-6 py-6 md:px-10">
 
+{loading && (
+  <div className="flex justify-center py-20">
+    <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-100 border-t-emerald-500"></div>
+  </div>
+)}
       {/* ✅ CONFIRM DIALOG (MOUNT ONCE) */}
       <div>
         <ConfirmDialog

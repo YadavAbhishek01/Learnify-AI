@@ -31,7 +31,7 @@ useEffect(() => {
   ProgreesInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
 
   getPdfById(); 
-}, [authUser]);
+}, [token]);
 
 
 
@@ -200,7 +200,25 @@ const GetFlashcardsByPdfId=async(pdfId)=>{
     SetLoading(false);
   }
 }
-
+const DeleteFlashcard=async(flashCardId)=>{
+    try {
+        SetLoading(true)
+         const res=await pdfdata.delete(`/flashcard/${flashCardId}`);
+        if(res.data.success)
+        {
+          toast.success("Deleted Successfullu")
+        }
+        else{
+            toast.error("Failed to Deleted",res.data.message);
+            SetLoading(false)
+        }
+    } catch (error) {
+      console.log("something went Wrong",error);
+      toast.error(error);
+    }finally{
+      SetLoading(false)
+    }
+}
 const GenerateQuiz=async(pdfId)=>{
   try {
     SetLoading(true)
@@ -245,7 +263,7 @@ const SubmitQuiz=async(pdfId,score)=>{
   }
 }
   return (
-    <PdfContext.Provider value={{ UploadPdf, getPdfById, pdfdata,getAiResponse,response ,getChatHistory,loading,DeletePdf,GenerateSummary,summary,ExplainConcept,explanation,explainLoading,summaryLoading,GenerateFlashCardByPdfId,flashcarddata,allcard,GetFlashcardsByPdfId,Quiz,progress,SetProgress,GenerateQuiz,SubmitQuiz}}>
+    <PdfContext.Provider value={{ UploadPdf, getPdfById, pdfdata,getAiResponse,response ,getChatHistory,loading,DeletePdf,GenerateSummary,summary,ExplainConcept,explanation,explainLoading,summaryLoading,GenerateFlashCardByPdfId,flashcarddata,allcard,GetFlashcardsByPdfId,Quiz,progress,SetProgress,GenerateQuiz,DeleteFlashcard,SubmitQuiz}}>
       {children}
     </PdfContext.Provider>
   );

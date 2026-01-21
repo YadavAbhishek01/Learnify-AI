@@ -10,21 +10,18 @@ const SignUp = () => {
   const [password, SetPassword] = useState('')
   const [hide, SetHide] = useState(false)
   const navigate = useNavigate();
+
+
   const handleregister = () => {
     getRegister(name, email, password)
     SetEmail('')
     SetName('')
     SetPassword('')
+     navigate('/login')
   }
 
 
-  const passwordRules = {
-    length: password.length >= 8,
-    upper: /[A-Z]/.test(password),
-    lower: /[a-z]/.test(password),
-    number: /\d/.test(password),
-    special: /[@$!%*?&#]/.test(password),
-  };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PdfContext } from "../context/Pdfcontext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const FlashCard = () => {
   const { allcard, GetFlashcardsByPdfId, loading } = useContext(PdfContext);
@@ -22,29 +22,54 @@ const FlashCard = () => {
     }
   }, [pdfId]);
 
-//   const toggleFlip = (id) => {
-//     setUiState((prev) => ({
-//       ...prev,
-//       [id]: { ...prev[id], flipped: !prev[id]?.flipped },
-//     }));
-//   };
 
-//   const next = (id, length) => {
-//     setUiState((prev) => ({
-//       ...prev,
-//       [id]: { current: Math.min((prev[id]?.current || 0) + 1, length - 1), flipped: false },
-//     }));
-//   };
+  if (loading)
+    return(
+      <div className="flex items-center justify-center min-h-[60vh] px-4">
+        <div className="bg-white border rounded-3xl shadow-sm p-8 text-center">
 
-//   const prev = (id) => {
-//     setUiState((prev) => ({
-//       ...prev,
-//       [id]: { current: Math.max((prev[id]?.current || 0) - 1, 0), flipped: false },
-//     }));
-//   };
+          <div className="h-12 w-12 mx-auto mb-4 animate-spin rounded-full border-4 border-emerald-100 border-t-emerald-600"></div>
 
-  if (loading) return <div className="text-center py-20">Loading flashcards...</div>;
-  if (!allcard.length) return <div className="text-center py-20">No flashcards available</div>;
+          <h2 className="text-lg font-semibold mb-1">
+            Loading Flashcards
+          </h2>
+
+          <p className="text-slate-600 text-sm">
+            Preparing smart flashcards from your document...
+          </p>
+        </div>
+      </div>
+    )
+  if (!allcard.length) 
+return(
+    <div className="flex items-center justify-center min-h-[60vh] px-4">
+      <div className="bg-white  rounded-3xl p-8 max-w-md text-center">
+        
+        <div className="w-16 h-16 mx-auto mb-4 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl">
+          🗂
+        </div>
+
+        <h2 className="text-xl font-semibold mb-2">
+          No Flashcards Available
+        </h2>
+
+        <p className="text-slate-600 text-sm mb-6">
+          You haven’t generated any flashcards yet. Upload a PDF and let AI
+          create flashcards for you automatically.
+        </p>
+
+        <Link
+          to="/documents"
+          className="inline-block px-6 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition"
+        >
+          Generate Flashcards
+        </Link>
+      </div>
+    </div>  
+)
+    
+   
+
 
   return (
     <div className="p-6 bg-emerald-50 min-h-screen">

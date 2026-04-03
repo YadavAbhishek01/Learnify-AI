@@ -18,7 +18,7 @@ import LandingPage from './pages/LandingPage.jsx'
 
 
 const App = () => {
-  const { authUser, loading ,token} = useContext(Authcontext)
+  const {loading ,token} = useContext(Authcontext)
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">

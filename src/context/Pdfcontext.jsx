@@ -1,13 +1,13 @@
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { AskaiInstanse, PdfUpload, ProgreesInstance } from "../utils/axiosInstance";
 import toast from "react-hot-toast";
-import { Authcontext } from "./Authcontext";
+import { useCallback } from "react";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const PdfContext = createContext();
 
 export const PdfProvider = ({ children }) => {
-  const [token, setToken] = useState(localStorage.getItem("token"));
-  const {authUser}=useContext(Authcontext)
+  const [token] = useState(localStorage.getItem("token"));
   const [pdfdata, setPdfData] = useState([]);
   const [summary,SetSummary]=useState('')
   const [flashcarddata,SetFlashCardData]=useState([])
@@ -17,7 +17,7 @@ const [summaryLoading, setSummaryLoading] = useState(false);
 const [explainLoading, setExplainLoading] = useState(false);
 const [Quiz, SetQuiz] = useState([]);
 const [progress, SetProgress] = useState(null);
-  const [response,setResponse]=useState([{
+  const [response]=useState([{
     question:'',
     answer:''
   }])
@@ -56,21 +56,19 @@ useEffect(() => {
   };
 
   // ✅ MEMOIZED FUNCTION
-  const getPdfById = async () => {
-    try {
+const getPdfById = useCallback(async () => {
+  try {
       SetLoading(true)
       const res = await PdfUpload.get("/my-pdfs");
       if (res.data.success) {
         setPdfData(res.data.pdfs);
       }
     } catch (error) {
-      SetLoading(false)
       console.error(error);
     }finally{
       SetLoading(false)
     }
-  }
-
+}, []);
   const getAiResponse=async({pdfId,question})=>{
     try {
         SetLoading(true)
@@ -106,7 +104,6 @@ useEffect(() => {
         SetLoading(false)
       }
     } catch (error) {
-      SetLoading(false)
       console.log(error || error.message)
     }finally{
       SetLoading(false)
@@ -203,14 +200,13 @@ const GetFlashcardsByPdfId=async(pdfId)=>{
 const DeleteFlashcard=async(flashCardId)=>{
     try {
         SetLoading(true)
-         const res=await pdfdata.delete(`/flashcard/${flashCardId}`);
+         const res=await PdfUpload.delete(`/flashcard/${flashCardId}`);
         if(res.data.success)
         {
           toast.success("Deleted Successfullu")
         }
         else{
-            toast.error("Failed to Deleted",res.data.message);
-            SetLoading(false)
+            toast.error("Failed to Deleted",res.data.message)
         }
     } catch (error) {
       console.log("something went Wrong",error);
@@ -238,7 +234,25 @@ const GenerateQuiz=async(pdfId)=>{
     SetLoading(false);
   }
 }
-
+const getFlashcard= useCallback(async()=>{
+  try {
+    SetLoading(true);
+    const res=await PdfUpload.get('/flashcards');
+    if(res.data.success)
+    {
+      SetAllCard(res.data.data);
+    }
+    else{
+      toast.error(res.data.message || "Not found")
+    }
+  } catch (error) {
+    console.log(error);
+     toast.error(error?.message || "Something went wrong");
+  }
+  finally{
+     SetLoading(false)
+  }
+},[])
 const SubmitQuiz=async(pdfId,score)=>{
   try {
     SetLoading(true);
@@ -263,7 +277,7 @@ const SubmitQuiz=async(pdfId,score)=>{
   }
 }
   return (
-    <PdfContext.Provider value={{ UploadPdf, getPdfById, pdfdata,getAiResponse,response ,getChatHistory,loading,DeletePdf,GenerateSummary,summary,ExplainConcept,explanation,explainLoading,summaryLoading,GenerateFlashCardByPdfId,flashcarddata,allcard,GetFlashcardsByPdfId,Quiz,progress,SetProgress,GenerateQuiz,DeleteFlashcard,SubmitQuiz}}>
+    <PdfContext.Provider value={{ UploadPdf, getPdfById,getFlashcard, pdfdata,getAiResponse,response ,getChatHistory,loading,DeletePdf,GenerateSummary,summary,ExplainConcept,explanation,explainLoading,summaryLoading,GenerateFlashCardByPdfId,flashcarddata,allcard,GetFlashcardsByPdfId,Quiz,progress,SetProgress,GenerateQuiz,DeleteFlashcard,SubmitQuiz}}>
       {children}
     </PdfContext.Provider>
   );

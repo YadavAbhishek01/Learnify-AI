@@ -1,7 +1,8 @@
 import React, { useContext } from "react";
 import { Grid, FileText, Book, User, LogOut, X } from "lucide-react";
-import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Authcontext } from "../context/Authcontext";
+import { PdfContext } from "../context/Pdfcontext";
 
 const Sidebar = ({open, setOpen }) => {
   const navigate=useNavigate()
@@ -13,9 +14,7 @@ const Sidebar = ({open, setOpen }) => {
   ];
    const location = useLocation();
   const {logoutUser}=useContext(Authcontext)
-
   const isProfileActive = location.pathname === "/profile";
-  const {pdfid}=useParams();
 
   return (
     <>

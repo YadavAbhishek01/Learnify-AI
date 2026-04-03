@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Trash } from "lucide-react";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
@@ -10,7 +10,6 @@ import { Authcontext } from "../context/Authcontext";
 export default function Documents() {
   const [open, setOpen] = useState(false);
   const { pdfdata, getPdfById, DeletePdf, loading } = useContext(PdfContext);
-  const { authUser } = useContext(Authcontext)
   const navigate = useNavigate();
   const [selectedId, setSelectedId] = useState(null);
 
@@ -23,7 +22,6 @@ export default function Documents() {
       message: "This action cannot be undone. Are you sure?"
     });
   };
-
 
   return (
     <div className="min-h-screen bg-gray-50 px-6 py-6 md:px-10">

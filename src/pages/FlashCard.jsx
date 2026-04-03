@@ -4,23 +4,34 @@ import { PdfContext } from "../context/Pdfcontext";
 import { Link, useNavigate } from "react-router-dom";
 
 const FlashCard = () => {
-  const { allcard, GetFlashcardsByPdfId, loading } = useContext(PdfContext);
+  const { allcard, getFlashcard, loading } = useContext(PdfContext);
   const [uiState, setUiState] = useState({});
-  const [pdfId, setPdfId] = useState(null);
 
   const navigate=useNavigate();
-  // Get pdfId from localStorage once
+  
   useEffect(() => {
-    const storedPdfId = JSON.parse(localStorage.getItem("pdfId"));
-    setPdfId(storedPdfId);
+    getFlashcard();
   }, []);
 
-  // Fetch flashcards when pdfId is ready
-  useEffect(() => {
-    if (pdfId) {
-      GetFlashcardsByPdfId(pdfId);
-    }
-  }, [pdfId]);
+  const prev = (deckId) => {
+    setUiState(prev => ({
+      ...prev,
+      [deckId]: {
+        ...prev[deckId],
+        current: Math.max((prev[deckId]?.current || 0) - 1, 0)
+      }
+    }));
+  };
+
+  const next = (deckId, totalCards) => {
+    setUiState(prev => ({
+      ...prev,
+      [deckId]: {
+        ...prev[deckId],
+        current: Math.min((prev[deckId]?.current || 0) + 1, totalCards - 1)
+      }
+    }));
+  };
 
 
   if (loading)
@@ -95,7 +106,7 @@ return(
                
               >
                 <div
-                  className={`relative h-60 transition-transform duration-500 [transform-style:preserve-3d]]`}
+                  className={`relative h-60 transition-transform duration-500 [transform-style:preserve-3d]`}
                 >
                   {/* FRONT */}
                   <div className="absolute inset-0 bg-white rounded-3xl border border-slate-200 shadow p-6 flex flex-col justify-between backface-hidden overflow-hidden">
